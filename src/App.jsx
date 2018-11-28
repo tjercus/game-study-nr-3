@@ -6,7 +6,7 @@ import {
   createRandomDir,
   moveHero,
   createNextPoint,
-  isCollision
+  isCollision, makeBullet
 } from "./utils";
 import {
   CANVAS_HEIGHT,
@@ -16,7 +16,7 @@ import {
   INTERVAL_BETWEEN_MOVES_MS,
   PX_PER_MOVE,
   keyMap,
-  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD
+  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, HERO_SIZE
 } from "./constants";
 
 const defaultState = {
@@ -30,7 +30,8 @@ const defaultState = {
     { x: 700, y: 700, dir: Directions.UP },
     { x: 200, y: 200, dir: Directions.RIGHT },
     { x: 400, y: 400, dir: Directions.LEFT }
-  ]
+  ],
+  bullets: []
 };
 
 /**
@@ -38,7 +39,7 @@ const defaultState = {
  * Is NOT in utils.js, since it manipulates state
  * @param {Object<State>} state
  * @param {Object<Action>} action - contains instructions on how to make next state
- * @returns {Object<Hero, number, Array<Snipe>>} next state
+ * @returns {Object<Hero, number, Array<Snipe>, Array<Unit>>} next state
  */
 const makeNextState = (state = defaultState, action) => {
   if (MOVE_SNIPES_CMD === action.type) {
@@ -79,6 +80,11 @@ const makeNextState = (state = defaultState, action) => {
     );
     return { ...state, hero: updatedHero }
   }
+  if (HERO_SHOOT_CMD === action.type) {
+    state.bullets.push(makeBullet(state.hero, action.shootDir));
+    console.log(state.bullets);
+    return { ...state }
+  }
   return state;
 };
 
@@ -97,7 +103,12 @@ class App extends Component {
 
   keyDownHandler = evt => {
     console.log(evt.keyCode);
-    this.setState(makeNextState(this.state, {type: MOVE_HERO_CMD, dir: keyMap[evt.keyCode]}));
+    // TODO isShootKey(keyCode)
+    if (evt.keyCode > 40) {
+      this.setState(makeNextState(this.state, {type: HERO_SHOOT_CMD, shootDir: keyMap[evt.keyCode]}));
+    } else {
+      this.setState(makeNextState(this.state, {type: MOVE_HERO_CMD, dir: keyMap[evt.keyCode]}));
+    }
   };
 
   render() {

@@ -145,3 +145,18 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
   subjects
     .map(subject => isCollision(subject, subj, subjectsSize))
     .includes(true);
+
+export const makeBullet = (hero, shootDir) => {
+  if ("shootLeft" === shootDir) {
+    return {x: hero.x - HERO_SIZE * 2, y: hero.y, dir: Directions.LEFT};
+  }
+  if ("shootRight" === shootDir) {
+    return {x: hero.x + HERO_SIZE * 2, y: hero.y, dir: Directions.RIGHT};
+  }
+  if ("shootUp" === shootDir) {
+    return {x: hero.x, y: hero.y - HERO_SIZE * 2, dir: Directions.UP};
+  }
+  if ("shootDown" === shootDir) {
+    return {x: hero.x, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN};
+  }
+};

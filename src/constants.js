@@ -75,3 +75,4 @@ export const HERO_SIZE = 10;
 
 export const MOVE_SNIPES_CMD = "MOVE_SNIPES_CMD";
 export const MOVE_HERO_CMD = "MOVE_HERO_CMD";
+export const HERO_SHOOT_CMD = "HERO_SHOOT_CMD";
