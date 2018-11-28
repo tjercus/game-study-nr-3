@@ -70,9 +70,10 @@ export const INTERVAL_BETWEEN_MOVES_MS = 100;
 export const PX_PER_MOVE = 10;
 
 export const SNIPE_SIZE = 5;
-
 export const HERO_SIZE = 10;
+export const BULLET_SIZE = 3;
 
 export const MOVE_SNIPES_CMD = "MOVE_SNIPES_CMD";
 export const MOVE_HERO_CMD = "MOVE_HERO_CMD";
 export const HERO_SHOOT_CMD = "HERO_SHOOT_CMD";
+export const MOVE_BULLETS_CMD = "MOVE_BULLETS_CMD";

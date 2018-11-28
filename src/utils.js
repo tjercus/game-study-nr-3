@@ -38,8 +38,8 @@ const createOppositeDir = dir => {
 
 /**
  * Corrects a units position and direction given the borders of a field
- *  the rule is that there is no pacman/snipes like 'round-going', so a snipe
- *  cannot cross the borders.
+ *  the rule is that there is no pacman/snipes like 'round-going', so a unit
+ *  cannot cross the borders. Instead it will 'bounce' or reverse it's direction
  * @param {Unit} unit - the moving subject, can be Snipe or Hero
  * @param {number} fieldWidth
  * @param {number} fieldHeight

@@ -16,7 +16,7 @@ import {
   INTERVAL_BETWEEN_MOVES_MS,
   PX_PER_MOVE,
   keyMap,
-  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, HERO_SIZE
+  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD
 } from "./constants";
 
 const defaultState = {
@@ -42,6 +42,24 @@ const defaultState = {
  * @returns {Object<Hero, number, Array<Snipe>, Array<Unit>>} next state
  */
 const makeNextState = (state = defaultState, action) => {
+  if (MOVE_BULLETS_CMD === action.type) {
+    const updatedBullets = state.bullets.map(bullet => {
+      let nextPoint = createNextPoint(
+        bullet.dir,
+        /** @type Point */ {x: bullet.x, y: bullet.y},
+        PX_PER_MOVE
+      );
+      // if (isCollision(state.hero, nextPoint, SNIPE_SIZE)) {
+      //   nextPoint = {x: snipe.x, y: snipe.y};
+      // }
+      return {
+        ...bullet,
+        ...nextPoint,
+        ...correctUnitBeyondBorderPosition(nextPoint, CANVAS_WIDTH, CANVAS_HEIGHT)
+      };
+    });
+    return { ...state, bullets: updatedBullets }
+  }
   if (MOVE_SNIPES_CMD === action.type) {
     console.log(MOVE_SNIPES_CMD);
     const updatedSnipes = state.snipes.map(snipe => {
@@ -59,7 +77,7 @@ const makeNextState = (state = defaultState, action) => {
       return {
         ...snipe,
         ...nextPoint,
-        ...correctUnitBeyondBorderPosition(nextPoint, CANVAS_WIDTH, CANVAS_HEIGHT)
+        ...correctUnitBeyondBorderPosition({...snipe, ...nextPoint}, CANVAS_WIDTH, CANVAS_HEIGHT)
       };
     });
     state.nrOfMoves++;
@@ -97,7 +115,7 @@ class App extends Component {
   componentDidMount() {
     window.addEventListener("keydown", this.keyDownHandler, false);
     setInterval(() => {
-      this.setState(makeNextState(this.state, {type: MOVE_SNIPES_CMD}));
+      this.setState(makeNextState(makeNextState(this.state, {type: MOVE_BULLETS_CMD}), {type: MOVE_SNIPES_CMD}));
     }, INTERVAL_BETWEEN_MOVES_MS);
   }
 
@@ -114,13 +132,13 @@ class App extends Component {
   render() {
     return (
       <Fragment>
-        <Canvas hero={this.state.hero} snipes={this.state.snipes} />
+        <Canvas hero={this.state.hero} snipes={this.state.snipes} bullets={this.state.bullets} />
         <div>
           Hero: {this.state.hero.x}, {this.state.hero.y}, {this.state.hero.dir}
         </div>
         {this.state.snipes.map((snipe, i) => {
           return (
-            <div>
+            <div key={i}>
               snipe {i}: {snipe.x}, {snipe.y}, {snipe.dir}
             </div>
           );
