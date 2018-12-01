@@ -16,7 +16,7 @@ import {
   INTERVAL_BETWEEN_MOVES_MS,
   PX_PER_MOVE,
   keyMap,
-  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD
+  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD, BULLET_SIZE
 } from "./constants";
 
 const defaultState = {
@@ -55,7 +55,7 @@ const makeNextState = (state = defaultState, action) => {
       return {
         ...bullet,
         ...nextPoint,
-        ...correctUnitBeyondBorderPosition(nextPoint, CANVAS_WIDTH, CANVAS_HEIGHT)
+        ...correctUnitBeyondBorderPosition(nextPoint, BULLET_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
       };
     });
     return { ...state, bullets: updatedBullets }
@@ -77,7 +77,7 @@ const makeNextState = (state = defaultState, action) => {
       return {
         ...snipe,
         ...nextPoint,
-        ...correctUnitBeyondBorderPosition({...snipe, ...nextPoint}, CANVAS_WIDTH, CANVAS_HEIGHT)
+        ...correctUnitBeyondBorderPosition({...snipe, ...nextPoint}, SNIPE_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
       };
     });
     state.nrOfMoves++;

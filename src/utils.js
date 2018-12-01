@@ -40,25 +40,27 @@ const createOppositeDir = dir => {
  * Corrects a units position and direction given the borders of a field
  *  the rule is that there is no pacman/snipes like 'round-going', so a unit
  *  cannot cross the borders. Instead it will 'bounce' or reverse it's direction
- * @param {Unit} unit - the moving subject, can be Snipe or Hero
+ * @param {Unit} unit - the moving subject, can be Snipe or Hero or Bullet
+ * @param {number} unitSize - int 
  * @param {number} fieldWidth
  * @param {number} fieldHeight
  * @returns {Unit} modified subject
  */
 export const correctUnitBeyondBorderPosition = (
   unit,
+  unitSize,
   fieldWidth,
   fieldHeight
 ) => {
-  if (unit.x >= fieldWidth - SNIPE_SIZE * 2) {
-    unit.x = fieldWidth - SNIPE_SIZE * 2;
+  if (unit.x >= fieldWidth - unitSize * 2) {
+    unit.x = fieldWidth - unitSize * 2;
     unit.dir = createOppositeDir(unit.dir);
   } else if (unit.x <= 0) {
     unit.x = 1;
     unit.dir = createOppositeDir(unit.dir);
   }
-  if (unit.y >= fieldHeight - SNIPE_SIZE * 2) {
-    unit.y = fieldHeight - SNIPE_SIZE * 2;
+  if (unit.y >= fieldHeight - unitSize * 2) {
+    unit.y = fieldHeight - unitSize * 2;
     unit.dir = createOppositeDir(unit.dir);
   } else if (unit.y <= 0) {
     unit.y = 1;
@@ -111,6 +113,7 @@ export const moveHero = (hero, snipes, prevPoint, nextPoint) => {
   }
   return /** @type Hero */ correctUnitBeyondBorderPosition(
     movedHero,
+    HERO_SIZE,
     CANVAS_WIDTH,
     CANVAS_HEIGHT
   );
