@@ -5,7 +5,7 @@ import {
   CANVAS_WIDTH,
   Directions,
   DirectionsArray,
-  HERO_SIZE
+  HERO_SIZE, SNIPE_SIZE
 } from "./constants";
 
 /**
@@ -121,7 +121,7 @@ export const moveHero = (hero, snipes, prevPoint, nextPoint) => {
 };
 
 /**
- * Do two Points share on or more coordinates?
+ * Do two Points share one or more coordinates?
  * @param {Unit} rect1
  * @param {Unit} rect2
  * @param {number} rectSize - the width or height of a rect/Unit

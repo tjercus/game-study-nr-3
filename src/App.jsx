@@ -16,7 +16,7 @@ import {
   INTERVAL_BETWEEN_MOVES_MS,
   PX_PER_MOVE,
   keyMap,
-  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD, BULLET_SIZE
+  SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD, BULLET_SIZE, HERO_SIZE
 } from "./constants";
 import uuidv4 from "uuid/v4";
 
@@ -52,7 +52,7 @@ const makeNextState = (state = defaultState, action) => {
           /** @type Point */ {x: bullet.x, y: bullet.y},
           PX_PER_MOVE
         );
-        if (!isCollisions(state.snipes, bullet, BULLET_SIZE)) {
+        if (!isCollisions(state.snipes, bullet, BULLET_SIZE * 2)) {
           return {
             ...bullet,
             ...nextPoint,
@@ -75,7 +75,7 @@ const makeNextState = (state = defaultState, action) => {
         /** @type Point */ {x: snipe.x, y: snipe.y},
         PX_PER_MOVE
       );
-      if (isCollision(state.hero, nextPoint, SNIPE_SIZE)) {
+      if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)) {
         nextPoint = {x: snipe.x, y: snipe.y};
       }
       return {
