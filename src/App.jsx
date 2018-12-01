@@ -6,7 +6,7 @@ import {
   createRandomDir,
   moveHero,
   createNextPoint,
-  isCollision, makeBullet
+  isCollision, makeBullet, isCollisions
 } from "./utils";
 import {
   CANVAS_HEIGHT,
@@ -18,12 +18,14 @@ import {
   keyMap,
   SNIPE_SIZE, MOVE_SNIPES_CMD, MOVE_HERO_CMD, HERO_SHOOT_CMD, MOVE_BULLETS_CMD, BULLET_SIZE
 } from "./constants";
+import uuidv4 from "uuid/v4";
 
 const defaultState = {
   nrOfMoves: 0,
   hero: {
     x: CANVAS_WIDTH / 2,
-    y: CANVAS_WIDTH / 2
+    y: CANVAS_WIDTH / 2,
+    id: uuidv4()
   },
   snipes: [
     { x: 10, y: 10, dir: Directions.DOWN },
@@ -44,25 +46,27 @@ const defaultState = {
 const makeNextState = (state = defaultState, action) => {
   if (MOVE_BULLETS_CMD === action.type) {
     const updatedBullets = state.bullets.map(bullet => {
-      let nextPoint = createNextPoint(
-        bullet.dir,
-        /** @type Point */ {x: bullet.x, y: bullet.y},
-        PX_PER_MOVE
-      );
-      // if (isCollision(state.hero, nextPoint, SNIPE_SIZE)) {
-      //   nextPoint = {x: snipe.x, y: snipe.y};
-      // }
-      return {
-        ...bullet,
-        ...nextPoint,
-        ...correctUnitBeyondBorderPosition(nextPoint, BULLET_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
-      };
+      if (typeof bullet !== "undefined" && bullet !== null) {
+        let nextPoint = createNextPoint(
+          bullet.dir,
+          /** @type Point */ {x: bullet.x, y: bullet.y},
+          PX_PER_MOVE
+        );
+        if (!isCollisions(state.snipes, bullet, BULLET_SIZE)) {
+          return {
+            ...bullet,
+            ...nextPoint,
+            ...correctUnitBeyondBorderPosition(nextPoint, BULLET_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
+          };
+        }
+      }
     });
+    console.log("updatedBullets", updatedBullets);
     return { ...state, bullets: updatedBullets }
   }
   if (MOVE_SNIPES_CMD === action.type) {
     console.log(MOVE_SNIPES_CMD);
-    const updatedSnipes = state.snipes.map(snipe => {
+    const updatedSnipes = state.snipes.map(/** @type Snipe */ snipe => {
       if (state.nrOfMoves % DIRECTION_LIMIT === 0) {
         snipe.dir = createRandomDir();
       }

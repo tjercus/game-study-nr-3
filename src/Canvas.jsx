@@ -18,12 +18,13 @@ const Canvas = props => {
     <svg id="game-canvas" viewBox={viewBox} onClick={onCanvasClick}>
       <Hero hero={props.hero} />
 
-      {props.bullets.map(bullet => (
-        <Bullet bullet={bullet} key={bullet.x + " " + bullet.y} />
-      ))}
+      {props.bullets.map(bullet =>
+        (typeof bullet !== "undefined" && bullet !== null)
+          ? <Bullet bullet={bullet} key={bullet.id} />
+          : null )}
 
       {props.snipes.map(snipe => (
-        <Snipe snipe={snipe} key={snipe.x + ":" + snipe.y + "_" + snipe.dir} />
+        <Snipe snipe={snipe} key={snipe.id} />
       ))}
     </svg>
   );

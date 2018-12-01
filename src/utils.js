@@ -1,10 +1,11 @@
+
+import uuidv4 from "uuid/v4";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   Directions,
   DirectionsArray,
-  HERO_SIZE,
-  SNIPE_SIZE
+  HERO_SIZE
 } from "./constants";
 
 /**
@@ -53,14 +54,14 @@ export const correctUnitBeyondBorderPosition = (
   fieldHeight
 ) => {
   if (unit.x >= fieldWidth - unitSize * 2) {
-    unit.x = fieldWidth - unitSize * 2;
+    unit.x = fieldWidth - (unitSize - 3) * 2;
     unit.dir = createOppositeDir(unit.dir);
   } else if (unit.x <= 0) {
     unit.x = 1;
     unit.dir = createOppositeDir(unit.dir);
   }
   if (unit.y >= fieldHeight - unitSize * 2) {
-    unit.y = fieldHeight - unitSize * 2;
+    unit.y = fieldHeight - (unitSize - 3) * 2;
     unit.dir = createOppositeDir(unit.dir);
   } else if (unit.y <= 0) {
     unit.y = 1;
@@ -151,15 +152,15 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
 
 export const makeBullet = (hero, shootDir) => {
   if ("shootLeft" === shootDir) {
-    return {x: hero.x - HERO_SIZE * 2, y: hero.y, dir: Directions.LEFT};
+    return {x: hero.x - HERO_SIZE * 2, y: hero.y, dir: Directions.LEFT, id: uuidv4() };
   }
   if ("shootRight" === shootDir) {
-    return {x: hero.x + HERO_SIZE * 2, y: hero.y, dir: Directions.RIGHT};
+    return {x: hero.x + HERO_SIZE * 2, y: hero.y, dir: Directions.RIGHT, id: uuidv4() };
   }
   if ("shootUp" === shootDir) {
-    return {x: hero.x, y: hero.y - HERO_SIZE * 2, dir: Directions.UP};
+    return {x: hero.x, y: hero.y - HERO_SIZE * 2, dir: Directions.UP, id: uuidv4() };
   }
   if ("shootDown" === shootDir) {
-    return {x: hero.x, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN};
+    return {x: hero.x, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN, id: uuidv4() };
   }
 };

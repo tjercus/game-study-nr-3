@@ -3,17 +3,19 @@ import PropTypes from "prop-types";
 import { BULLET_SIZE } from "./constants";
 
 const Bullet = props => {
-  return (
-    <rect
-      x={props.bullet.x}
-      y={props.bullet.y}
-      width={BULLET_SIZE}
-      height={BULLET_SIZE}
-      stroke="orange"
-      fill="yellow"
-      strokeWidth={1}
-    />
-  );
+  if (typeof props.bullet !== "undefined" && props.bullet !== null) {
+    return (
+      <rect
+        x={props.bullet.x}
+        y={props.bullet.y}
+        width={BULLET_SIZE}
+        height={BULLET_SIZE}
+        stroke="orange"
+        fill="red"
+        strokeWidth={1}
+      />
+    );
+  }
 };
 
 Bullet.propTypes = {
