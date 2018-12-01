@@ -5,7 +5,7 @@ import {
   CANVAS_WIDTH,
   Directions,
   DirectionsArray,
-  HERO_SIZE, SNIPE_SIZE
+  HERO_SIZE
 } from "./constants";
 
 /**
@@ -128,7 +128,8 @@ export const moveHero = (hero, snipes, prevPoint, nextPoint) => {
  * @returns {boolean} share?
  */
 export const isCollision = (rect1, rect2, rectSize) => {
-  if (rect1 === null || rect2 === null) {
+  if (rect1 === null || rect2 === null
+      || typeof rect1 === "undefined" || typeof rect2 === "undefined") {
     return false;
   }
   const predY1 = rect1.y + rectSize <= rect2.y;

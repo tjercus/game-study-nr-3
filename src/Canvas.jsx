@@ -23,9 +23,10 @@ const Canvas = props => {
           ? <Bullet bullet={bullet} key={bullet.id} />
           : null )}
 
-      {props.snipes.map(snipe => (
-        <Snipe snipe={snipe} key={snipe.id} />
-      ))}
+      {props.snipes.map(snipe =>
+        (typeof snipe !== "undefined" && snipe !== null)
+          ? <Snipe snipe={snipe} key={snipe.id} />
+          : null )}
     </svg>
   );
 };

@@ -61,28 +61,35 @@ const makeNextState = (state = defaultState, action) => {
         }
       }
     });
-    console.log("updatedBullets", updatedBullets);
-    return { ...state, bullets: updatedBullets }
+    const updatedSnipes = state.snipes.map(snipe => {
+      if (typeof snipe !== "undefined" && snipe !== null) {
+        if (!isCollisions(state.bullets, snipe, SNIPE_SIZE * 2)) {
+          return snipe;
+        }
+      }
+    });
+    return { ...state, bullets: updatedBullets, snipes: updatedSnipes }
   }
   if (MOVE_SNIPES_CMD === action.type) {
-    console.log(MOVE_SNIPES_CMD);
     const updatedSnipes = state.snipes.map(/** @type Snipe */ snipe => {
-      if (state.nrOfMoves % DIRECTION_LIMIT === 0) {
-        snipe.dir = createRandomDir();
+      if (typeof snipe !== "undefined" && snipe !== null) {
+        if (state.nrOfMoves % DIRECTION_LIMIT === 0) {
+          snipe.dir = createRandomDir();
+        }
+        let nextPoint = createNextPoint(
+          snipe.dir,
+          /** @type Point */ {x: snipe.x, y: snipe.y},
+          PX_PER_MOVE
+        );
+        if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)) {
+          nextPoint = {x: snipe.x, y: snipe.y};
+        }
+        return {
+          ...snipe,
+          ...nextPoint,
+          ...correctUnitBeyondBorderPosition({...snipe, ...nextPoint}, SNIPE_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
+        };
       }
-      let nextPoint = createNextPoint(
-        snipe.dir,
-        /** @type Point */ {x: snipe.x, y: snipe.y},
-        PX_PER_MOVE
-      );
-      if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)) {
-        nextPoint = {x: snipe.x, y: snipe.y};
-      }
-      return {
-        ...snipe,
-        ...nextPoint,
-        ...correctUnitBeyondBorderPosition({...snipe, ...nextPoint}, SNIPE_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT)
-      };
     });
     state.nrOfMoves++;
     return { ...state, snipes: updatedSnipes }
@@ -104,7 +111,6 @@ const makeNextState = (state = defaultState, action) => {
   }
   if (HERO_SHOOT_CMD === action.type) {
     state.bullets.push(makeBullet(state.hero, action.shootDir));
-    console.log(state.bullets);
     return { ...state }
   }
   return state;
@@ -124,7 +130,6 @@ class App extends Component {
   }
 
   keyDownHandler = evt => {
-    console.log(evt.keyCode);
     // TODO isShootKey(keyCode)
     if (evt.keyCode > 40) {
       this.setState(makeNextState(this.state, {type: HERO_SHOOT_CMD, shootDir: keyMap[evt.keyCode]}));
@@ -141,11 +146,11 @@ class App extends Component {
           Hero: {this.state.hero.x}, {this.state.hero.y}, {this.state.hero.dir}
         </div>
         {this.state.snipes.map((snipe, i) => {
-          return (
-            <div key={i}>
+          return (typeof snipe !== "undefined" && snipe !== null) ?
+            (<div key={i}>
               snipe {i}: {snipe.x}, {snipe.y}, {snipe.dir}
             </div>
-          );
+          ) : null;
         })}
       </Fragment>
     );
