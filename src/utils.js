@@ -153,15 +153,15 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
 
 export const makeBullet = (hero, shootDir) => {
   if ("shootLeft" === shootDir) {
-    return {x: hero.x - HERO_SIZE * 2, y: hero.y, dir: Directions.LEFT, id: uuidv4() };
+    return {x: hero.x - (HERO_SIZE * 2) + 5, y: hero.y + 3, dir: Directions.LEFT, id: uuidv4() };
   }
   if ("shootRight" === shootDir) {
-    return {x: hero.x + HERO_SIZE * 2, y: hero.y, dir: Directions.RIGHT, id: uuidv4() };
+    return {x: hero.x + HERO_SIZE * 2, y: hero.y + 3, dir: Directions.RIGHT, id: uuidv4() };
   }
   if ("shootUp" === shootDir) {
-    return {x: hero.x, y: hero.y - HERO_SIZE * 2, dir: Directions.UP, id: uuidv4() };
+    return {x: hero.x + 3, y: hero.y - HERO_SIZE * 2, dir: Directions.UP, id: uuidv4() };
   }
   if ("shootDown" === shootDir) {
-    return {x: hero.x, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN, id: uuidv4() };
+    return {x: hero.x + 3, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN, id: uuidv4() };
   }
 };

@@ -1,7 +1,7 @@
 /**
+ * TODO perhaps name 'Movable'
  * @interface Unit
- * @property {number} x - cartesian coord
- * @property {number} y - cartesian coord
+ * @augments Point
  * @property {string} dir - direction
  */
 

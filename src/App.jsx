@@ -28,10 +28,10 @@ const defaultState = {
     id: uuidv4()
   },
   snipes: [
-    { x: 10, y: 10, dir: Directions.DOWN },
-    { x: 700, y: 700, dir: Directions.UP },
-    { x: 200, y: 200, dir: Directions.RIGHT },
-    { x: 400, y: 400, dir: Directions.LEFT }
+    { x: 100, y: 100, dir: Directions.DOWN },
+    { x: 200, y: 200, dir: Directions.UP },
+    { x: CANVAS_WIDTH - 100, y: CANVAS_WIDTH - 100, dir: Directions.RIGHT },
+    { x: CANVAS_WIDTH - 200, y: CANVAS_WIDTH - 200, dir: Directions.LEFT }
   ],
   bullets: []
 };
