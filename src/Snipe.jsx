@@ -5,8 +5,8 @@ import { SNIPE_SIZE } from "./constants";
 const Snipe = props => {
   return (
     <rect
-      x={props.snipe.x}
-      y={props.snipe.y}
+      x={props.snipe.x - (SNIPE_SIZE / 2)}
+      y={props.snipe.y - (SNIPE_SIZE / 2)}
       width={SNIPE_SIZE}
       height={SNIPE_SIZE}
       stroke="green"

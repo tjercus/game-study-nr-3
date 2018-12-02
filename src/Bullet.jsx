@@ -6,8 +6,8 @@ const Bullet = props => {
   if (typeof props.bullet !== "undefined" && props.bullet !== null) {
     return (
       <rect
-        x={props.bullet.x}
-        y={props.bullet.y}
+        x={props.bullet.x - (BULLET_SIZE / 2)}
+        y={props.bullet.y - (BULLET_SIZE / 2)}
         width={BULLET_SIZE}
         height={BULLET_SIZE}
         stroke="orange"

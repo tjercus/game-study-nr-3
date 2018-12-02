@@ -5,8 +5,8 @@ import { HERO_SIZE } from "./constants";
 const Hero = props => {
   return (
     <rect
-      x={props.hero.x}
-      y={props.hero.y}
+      x={props.hero.x - (HERO_SIZE / 2)}
+      y={props.hero.y - (HERO_SIZE / 2)}
       width={HERO_SIZE}
       height={HERO_SIZE}
       stroke="blue"

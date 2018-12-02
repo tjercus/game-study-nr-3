@@ -17,8 +17,8 @@
 
 /**
  * @interface Point
- * @property {number} x - cartesian coord
- * @property {number} y - cartesian coord
+ * @property {number} x - cartesian coord, left-right axis
+ * @property {number} y - cartesian coord, up-down axis
  */
 
 /**
