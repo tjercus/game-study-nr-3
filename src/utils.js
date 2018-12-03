@@ -156,39 +156,40 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
 
 /**
  * Make a bullet seen from a Unit and moving in a certain direction
- * @param {Unit} hero
+ * @param {Unit|Hero|snipe} unit of any subtype like snipe
+ * @param {number} unitSize
  * @param {string} shootDir
  * @returns {Unit} bullet
  */
-export const makeBullet = (hero, shootDir) => {
-  if ("shootLeft" === shootDir) {
+export const makeBullet = (unit, unitSize, shootDir) => {
+  if (["shootLeft", "left"].includes(shootDir)) {
     return {
-      x: hero.x - HERO_SIZE * 2,
-      y: hero.y,
+      x: unit.x - unitSize * 2,
+      y: unit.y,
       dir: Directions.LEFT,
       id: uuidv4()
     };
   }
-  if ("shootRight" === shootDir) {
+  if (["shootRight", "right"].includes(shootDir)) {
     return {
-      x: hero.x + HERO_SIZE * 2,
-      y: hero.y,
+      x: unit.x + unitSize * 2,
+      y: unit.y,
       dir: Directions.RIGHT,
       id: uuidv4()
     };
   }
-  if ("shootUp" === shootDir) {
+  if (["shootUp", "up"].includes(shootDir)) {
     return {
-      x: hero.x,
-      y: hero.y - HERO_SIZE * 2,
+      x: unit.x,
+      y: unit.y - unitSize * 2,
       dir: Directions.UP,
       id: uuidv4()
     };
   }
-  if ("shootDown" === shootDir) {
+  if (["shootDown", "down"].includes(shootDir)) {
     return {
-      x: hero.x,
-      y: hero.y + HERO_SIZE * 2,
+      x: unit.x,
+      y: unit.y + unitSize * 2,
       dir: Directions.DOWN,
       id: uuidv4()
     };
