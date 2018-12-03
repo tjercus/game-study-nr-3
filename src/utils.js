@@ -1,4 +1,3 @@
-
 import uuidv4 from "uuid/v4";
 import {
   CANVAS_HEIGHT,
@@ -42,7 +41,7 @@ const createOppositeDir = dir => {
  *  the rule is that there is no pacman/snipes like 'round-going', so a unit
  *  cannot cross the borders. Instead it will 'bounce' or reverse it's direction
  * @param {Unit} unit - the moving subject, can be Snipe or Hero or Bullet
- * @param {number} unitSize - int 
+ * @param {number} unitSize - int
  * @param {number} fieldWidth
  * @param {number} fieldHeight
  * @returns {Unit} modified subject
@@ -128,8 +127,12 @@ export const moveHero = (hero, snipes, prevPoint, nextPoint) => {
  * @returns {boolean} share?
  */
 export const isCollision = (rect1, rect2, rectSize) => {
-  if (rect1 === null || rect2 === null
-      || typeof rect1 === "undefined" || typeof rect2 === "undefined") {
+  if (
+    rect1 === null ||
+    rect2 === null ||
+    typeof rect1 === "undefined" ||
+    typeof rect2 === "undefined"
+  ) {
     return false;
   }
   const predY1 = rect1.y + rectSize <= rect2.y;
@@ -151,17 +154,55 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
     .map(subject => isCollision(subject, subj, subjectsSize))
     .includes(true);
 
+/**
+ * Make a bullet seen from a Unit and moving in a certain direction
+ * @param {Unit} hero
+ * @param {string} shootDir
+ * @returns {Unit} bullet
+ */
 export const makeBullet = (hero, shootDir) => {
   if ("shootLeft" === shootDir) {
-    return {x: hero.x - (HERO_SIZE * 2), y: hero.y, dir: Directions.LEFT, id: uuidv4() };
+    return {
+      x: hero.x - HERO_SIZE * 2,
+      y: hero.y,
+      dir: Directions.LEFT,
+      id: uuidv4()
+    };
   }
   if ("shootRight" === shootDir) {
-    return {x: hero.x + HERO_SIZE * 2, y: hero.y, dir: Directions.RIGHT, id: uuidv4() };
+    return {
+      x: hero.x + HERO_SIZE * 2,
+      y: hero.y,
+      dir: Directions.RIGHT,
+      id: uuidv4()
+    };
   }
   if ("shootUp" === shootDir) {
-    return {x: hero.x, y: hero.y - HERO_SIZE * 2, dir: Directions.UP, id: uuidv4() };
+    return {
+      x: hero.x,
+      y: hero.y - HERO_SIZE * 2,
+      dir: Directions.UP,
+      id: uuidv4()
+    };
   }
   if ("shootDown" === shootDir) {
-    return {x: hero.x, y: hero.y + HERO_SIZE * 2, dir: Directions.DOWN, id: uuidv4() };
+    return {
+      x: hero.x,
+      y: hero.y + HERO_SIZE * 2,
+      dir: Directions.DOWN,
+      id: uuidv4()
+    };
   }
+};
+
+/**
+ * Calculate distance between two points
+ * @param {Point} rect1
+ * @param {Point} rect2
+ * @returns {number} distance between
+ */
+export const distance = (rect1, rect2) => {
+  const xDiff = rect1.x - rect2.x;
+  const yDiff = rect1.y - rect2.y;
+  return Math.round(Math.sqrt(xDiff * xDiff + yDiff * yDiff));
 };

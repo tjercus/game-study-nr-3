@@ -5,7 +5,7 @@
  - rendering to svg
  - entities (aka snipes) moving autonomously
  - one hero can be moved by the player
- - better (from #2) collision detection, the snipes will not cross the hero and vice versa
+ - collision detection, the snipes will not cross the hero and vice versa
  - player can shoot at snipes
  - snipes can shoot at player
  - central redux-like store and reducer
