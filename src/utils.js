@@ -217,10 +217,10 @@ export const distance = (rect1, rect2) => {
 export const getDirBetween = (unit, hero) => {
   if (unit && distance(unit, hero) < 200) {
     if (unit.y > hero.y) {
-      return Directions.DOWN;
+      return Directions.UP;
     }
     if (unit.y < hero.y) {
-      return Directions.UP;
+      return Directions.DOWN;
     }
     if (unit.x > hero.x) {
       return Directions.LEFT;
