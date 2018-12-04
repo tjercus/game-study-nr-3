@@ -212,7 +212,7 @@ export const distance = (rect1, rect2) => {
  * calculate dir where hero is as seen from unit
  * @param {Unit} unit
  * @param {Hero} hero
- * @returns {string|boolean} direction or false
+ * @returns {string|boolean} direction or false if not seen
  */
 export const getDirBetween = (unit, hero) => {
   if (unit && distance(unit, hero) < 200) {
