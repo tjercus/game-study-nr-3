@@ -9,7 +9,8 @@ import {
   isCollision,
   makeBullet,
   isCollisions,
-  distance
+  distance,
+  getDirBetween
 } from "./utils";
 import {
   CANVAS_HEIGHT,
@@ -39,8 +40,18 @@ const defaultState = {
   snipes: [
     { x: 100, y: 100, dir: Directions.DOWN, id: uuidv4() },
     { x: 200, y: 200, dir: Directions.UP, id: uuidv4() },
-    { x: CANVAS_WIDTH - 100, y: CANVAS_WIDTH - 100, dir: Directions.RIGHT, id: uuidv4() },
-    { x: CANVAS_WIDTH - 200, y: CANVAS_WIDTH - 200, dir: Directions.LEFT, id: uuidv4() }
+    {
+      x: CANVAS_WIDTH - 100,
+      y: CANVAS_WIDTH - 100,
+      dir: Directions.RIGHT,
+      id: uuidv4()
+    },
+    {
+      x: CANVAS_WIDTH - 200,
+      y: CANVAS_WIDTH - 200,
+      dir: Directions.LEFT,
+      id: uuidv4()
+    }
   ],
   bullets: []
 };
@@ -79,7 +90,9 @@ const makeNextState = (state = defaultState, action) => {
       }
     });
     // TODO figure out what to do if hero is killed
-    const updatedHero = isCollisions(state.bullets, state.hero, HERO_SIZE) ? {...state.hero, x: -1000, y: -1000} : state.hero;
+    const updatedHero = isCollisions(state.bullets, state.hero, HERO_SIZE)
+      ? { ...state.hero, x: -1000, y: -1000 }
+      : state.hero;
     const updatedSnipes = state.snipes.map(snipe => {
       if (typeof snipe !== "undefined" && snipe !== null) {
         if (!isCollisions(state.bullets, snipe, SNIPE_SIZE * 2)) {
@@ -87,7 +100,12 @@ const makeNextState = (state = defaultState, action) => {
         }
       }
     });
-    return { ...state, bullets: updatedBullets, snipes: updatedSnipes, hero: updatedHero };
+    return {
+      ...state,
+      bullets: updatedBullets,
+      snipes: updatedSnipes,
+      hero: updatedHero
+    };
   }
   if (MOVE_SNIPES_CMD === action.type) {
     const updatedSnipes = state.snipes.map(
@@ -118,13 +136,14 @@ const makeNextState = (state = defaultState, action) => {
         }
       }
     );
-    const updatedBullets = [ ...state.bullets ];
+    const updatedBullets = [...state.bullets];
     // scan circle of terror and when a hero is in it: 1. decide which dir hero is, 2. shoot in dir
     state.snipes.map(_snipe => {
-      if (_snipe && distance(state.hero, _snipe) < 200) {
+      let dir = getDirBetween(_snipe, state.hero);
+      if (dir) {
         console.log("SNIPE saw hero");
         // TODO calculate the relative dir from snipe to hero
-        updatedBullets.push(makeBullet(_snipe, 20, _snipe.dir));
+        updatedBullets.push(makeBullet(_snipe, 20, dir));
       }
     });
     state.nrOfMoves++;
@@ -190,7 +209,9 @@ class App extends Component {
         <Canvas
           hero={this.state.hero}
           snipes={this.state.snipes}
-          bullets={this.state.bullets.filter(bullet => typeof bullet !== "undefined" && bullet.dir)}
+          bullets={this.state.bullets.filter(
+            bullet => typeof bullet !== "undefined" && bullet.dir
+          )}
         />
         <div>
           Hero: {this.state.hero.x}, {this.state.hero.y}, {this.state.hero.dir}

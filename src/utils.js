@@ -207,3 +207,27 @@ export const distance = (rect1, rect2) => {
   const yDiff = rect1.y - rect2.y;
   return Math.round(Math.sqrt(xDiff * xDiff + yDiff * yDiff));
 };
+
+/**
+ * calculate dir where hero is as seen from unit
+ * @param {Unit} unit
+ * @param {Hero} hero
+ * @returns {string|boolean} direction or false
+ */
+export const getDirBetween = (unit, hero) => {
+  if (unit && distance(unit, hero) < 200) {
+    if (unit.y > hero.y) {
+      return Directions.DOWN;
+    }
+    if (unit.y < hero.y) {
+      return Directions.UP;
+    }
+    if (unit.x > hero.x) {
+      return Directions.LEFT;
+    }
+    if (unit.x < hero.x) {
+      return Directions.RIGHT;
+    }
+  }
+  return false;
+};
