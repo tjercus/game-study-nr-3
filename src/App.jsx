@@ -9,7 +9,6 @@ import {
   isCollision,
   makeBullet,
   isCollisions,
-  distance,
   getDirBetween
 } from "./utils";
 import {
@@ -74,9 +73,9 @@ const makeNextState = (state = defaultState, action) => {
         );
         if (
           !isCollision(state.hero, bullet, HERO_SIZE) &&
-          !isCollisions(state.snipes, bullet, BULLET_SIZE * 2)
+          !isCollisions(state.snipes, bullet, SNIPE_SIZE)
         ) {
-          return {
+          let finalBullet = {
             ...bullet,
             ...nextPoint,
             ...correctUnitBeyondBorderPosition(
@@ -86,6 +85,9 @@ const makeNextState = (state = defaultState, action) => {
               CANVAS_HEIGHT
             )
           };
+          if (finalBullet.x > 0 && finalBullet.y > 0) {
+            return finalBullet;
+          }
         }
       }
     });
@@ -119,7 +121,8 @@ const makeNextState = (state = defaultState, action) => {
             /** @type Point */ { x: snipe.x, y: snipe.y },
             PX_PER_MOVE
           );
-          if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)) {
+          if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)
+            || isCollisions(state.snipes, nextPoint, SNIPE_SIZE * 2)) {
             nextPoint = { x: snipe.x, y: snipe.y };
           }
 
@@ -139,11 +142,13 @@ const makeNextState = (state = defaultState, action) => {
     const updatedBullets = [...state.bullets];
     // scan circle of terror and when a hero is in it: 1. decide which dir hero is, 2. shoot in dir
     state.snipes.map(_snipe => {
-      let dir = getDirBetween(_snipe, state.hero);
-      if (dir) {
-        console.log("SNIPE saw hero");
-        // TODO calculate the relative dir from snipe to hero
-        updatedBullets.push(makeBullet(_snipe, 20, dir));
+      if (state.nrOfMoves % 5 === 0) {
+        let dir = getDirBetween(_snipe, state.hero);
+        if (dir) {
+          console.log("SNIPE saw hero");
+          // TODO calculate the relative dir from snipe to hero
+          updatedBullets.push(makeBullet(_snipe, 20, dir));
+        }
       }
     });
     state.nrOfMoves++;
