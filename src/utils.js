@@ -22,17 +22,29 @@ export const createRandomDir = () => {
  * @returns {string} opposite dir
  */
 const createOppositeDir = dir => {
-  if (dir === Directions.UP) {
-    return Directions.DOWN;
+  if (dir === Directions.NORTH) {
+    return Directions.SOUTH;
   }
-  if (dir === Directions.DOWN) {
-    return Directions.UP;
+  if (dir === Directions.NORTH_EAST) {
+    return Directions.SOUTH_WEST;
   }
-  if (dir === Directions.LEFT) {
-    return Directions.RIGHT;
+  if (dir === Directions.EAST) {
+    return Directions.WEST;
   }
-  if (dir === Directions.RIGHT) {
-    return Directions.LEFT;
+  if (dir === Directions.SOUTH_EAST) {
+    return Directions.NORTH_WEST;
+  }
+  if (dir === Directions.SOUTH) {
+    return Directions.NORTH;
+  }
+  if (dir === Directions.SOUTH_WEST) {
+    return Directions.NORTH_EAST;
+  }
+  if (dir === Directions.EAST) {
+    return Directions.WEST;
+  }
+  if (dir === Directions.NORTH_WEST) {
+    return Directions.SOUTH_EAST;
   }
 };
 
@@ -52,7 +64,6 @@ export const correctUnitBeyondBorderPosition = (
   fieldWidth,
   fieldHeight
 ) => {
-  console.log("correctUnitBeyondBorderPosition #1", unit);
   if (unit.x >= fieldWidth - unitSize / 2) {
     unit.x = fieldWidth - (unitSize / 2) * 2;
     unit.dir = createOppositeDir(unit.dir);
@@ -67,7 +78,6 @@ export const correctUnitBeyondBorderPosition = (
     unit.y = unitSize;
     unit.dir = createOppositeDir(unit.dir);
   }
-  console.log("correctUnitBeyondBorderPosition #2", unit);
   return unit;
 };
 
@@ -81,17 +91,33 @@ export const correctUnitBeyondBorderPosition = (
 export const createNextPoint = (dir, prevPoint, nrOfPixels) => {
   const nextPoint = /** @type Point */ { ...prevPoint };
   switch (dir) {
-    case Directions.UP:
+    case Directions.NORTH:
       nextPoint.y = prevPoint.y - nrOfPixels;
       break;
-    case Directions.RIGHT:
+    case Directions.NORTH_EAST:
+      nextPoint.x = prevPoint.x + nrOfPixels;
+      nextPoint.y = prevPoint.y - nrOfPixels;
+      break;
+    case Directions.EAST:
       nextPoint.x = prevPoint.x + nrOfPixels;
       break;
-    case Directions.DOWN:
+    case Directions.SOUTH_EAST:
+      nextPoint.x = prevPoint.x + nrOfPixels;
       nextPoint.y = prevPoint.y + nrOfPixels;
       break;
-    case Directions.LEFT:
+    case Directions.SOUTH:
+      nextPoint.y = prevPoint.y + nrOfPixels;
+      break;
+    case Directions.SOUTH_WEST:
       nextPoint.x = prevPoint.x - nrOfPixels;
+      nextPoint.y = prevPoint.y + nrOfPixels;
+      break;
+    case Directions.WEST:
+      nextPoint.x = prevPoint.x - nrOfPixels;
+      break;
+    case Directions.NORTH_WEST:
+      nextPoint.x = prevPoint.x - nrOfPixels;
+      nextPoint.y = prevPoint.y - nrOfPixels;
       break;
     default:
       break;
@@ -164,35 +190,67 @@ export const isCollisions = (subjects, subj, subjectsSize) =>
  * @returns {Unit} bullet
  */
 export const makeBullet = (unit, unitSize, shootDir) => {
-  if (["shootLeft", "left"].includes(shootDir)) {
-    return {
-      x: unit.x - unitSize * 2,
-      y: unit.y,
-      dir: Directions.LEFT,
-      id: uuidv4()
-    };
-  }
-  if (["shootRight", "right"].includes(shootDir)) {
-    return {
-      x: unit.x + unitSize * 2,
-      y: unit.y,
-      dir: Directions.RIGHT,
-      id: uuidv4()
-    };
-  }
-  if (["shootUp", "up"].includes(shootDir)) {
+  if (["shootUp", "north"].includes(shootDir)) {
     return {
       x: unit.x,
       y: unit.y - unitSize * 2,
-      dir: Directions.UP,
+      dir: Directions.NORTH,
       id: uuidv4()
     };
   }
-  if (["shootDown", "down"].includes(shootDir)) {
+  if (["shootUpRight", "north_east"].includes(shootDir)) {
+    return {
+      x: unit.x - unitSize * 2,
+      y: unit.y,
+      dir: Directions.NORTH_EAST,
+      id: uuidv4()
+    };
+  }
+  if (["shootRight", "east"].includes(shootDir)) {
+    return {
+      x: unit.x + unitSize * 2,
+      y: unit.y,
+      dir: Directions.EAST,
+      id: uuidv4()
+    };
+  }
+  if (["shootDownRight", "south_east"].includes(shootDir)) {
+    return {
+      x: unit.x - unitSize * 2,
+      y: unit.y,
+      dir: Directions.SOUTH_EAST,
+      id: uuidv4()
+    };
+  }
+  if (["shootDown", "south"].includes(shootDir)) {
     return {
       x: unit.x,
       y: unit.y + unitSize * 2,
-      dir: Directions.DOWN,
+      dir: Directions.SOUTH,
+      id: uuidv4()
+    };
+  }
+  if (["shootDownLeft", "south_west"].includes(shootDir)) {
+    return {
+      x: unit.x - unitSize * 2,
+      y: unit.y,
+      dir: Directions.SOUTH_WEST,
+      id: uuidv4()
+    };
+  }
+  if (["shootLeft", "west"].includes(shootDir)) {
+    return {
+      x: unit.x - unitSize * 2,
+      y: unit.y,
+      dir: Directions.WEST,
+      id: uuidv4()
+    };
+  }
+  if (["shootUpLeft", "north_west"].includes(shootDir)) {
+    return {
+      x: unit.x - unitSize * 2,
+      y: unit.y,
+      dir: Directions.NORTH_WEST,
       id: uuidv4()
     };
   }
@@ -218,17 +276,29 @@ export const distance = (rect1, rect2) => {
  */
 export const getDirBetween = (unit, hero) => {
   if (unit && distance(unit, hero) < 200) {
-    if (unit.y > hero.y) {
-      return Directions.UP;
+    if (unit.y > hero.y && unit.x === hero.x) {
+      return Directions.NORTH;
     }
-    if (unit.y < hero.y) {
-      return Directions.DOWN;
+    if (unit.y > hero.y && unit.x < hero.x) {
+      return Directions.NORTH_EAST;
     }
-    if (unit.x > hero.x) {
-      return Directions.LEFT;
+    if (unit.y < hero.y && unit.x === hero.x) {
+      return Directions.SOUTH;
     }
-    if (unit.x < hero.x) {
-      return Directions.RIGHT;
+    if (unit.y < hero.y && unit.x < hero.x) {
+      return Directions.SOUTH_EAST;
+    }
+    if (unit.x > hero.x && unit.y === hero.y) {
+      return Directions.WEST;
+    }
+    if (unit.y < hero.y && unit.x > hero.x) {
+      return Directions.SOUTH_WEST;
+    }
+    if (unit.x < hero.x && unit.x === hero.x) {
+      return Directions.EAST;
+    }
+    if (unit.y > hero.y && unit.x > hero.x) {
+      return Directions.NORTH_WEST;
     }
   }
   return false;

@@ -37,18 +37,18 @@ const defaultState = {
     id: uuidv4()
   },
   snipes: [
-    { x: 100, y: 100, dir: Directions.DOWN, id: uuidv4() },
-    { x: 200, y: 200, dir: Directions.UP, id: uuidv4() },
+    { x: 100, y: 100, dir: Directions.SOUTH, id: uuidv4() },
+    { x: 200, y: 200, dir: Directions.NORTH, id: uuidv4() },
     {
       x: CANVAS_WIDTH - 100,
       y: CANVAS_WIDTH - 100,
-      dir: Directions.RIGHT,
+      dir: Directions.EAST,
       id: uuidv4()
     },
     {
       x: CANVAS_WIDTH - 200,
       y: CANVAS_WIDTH - 200,
-      dir: Directions.LEFT,
+      dir: Directions.WEST,
       id: uuidv4()
     }
   ],

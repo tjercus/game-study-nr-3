@@ -31,22 +31,26 @@
  * @property {Object} payload
  */
 
-/**
- *
- * @type {{UP: string, RIGHT: string, DOWN: string, LEFT: string}}
- */
 export const Directions = {
-  UP: "up",
-  RIGHT: "right",
-  DOWN: "down",
-  LEFT: "left"
+  NORTH: "north",
+  NORTH_EAST: "north_east",
+  EAST: "east",
+  SOUTH_EAST: "south_east",
+  SOUTH: "south",
+  SOUTH_WEST: "south_west",
+  WEST: "west",
+  NORTH_WEST: "north_west"
 };
 
 export const DirectionsArray = [
-  Directions.UP,
-  Directions.RIGHT,
-  Directions.DOWN,
-  Directions.LEFT
+  Directions.NORTH,
+  Directions.NORTH_EAST,
+  Directions.EAST,
+  Directions.SOUTH_EAST,
+  Directions.SOUTH,
+  Directions.SOUTH_WEST,
+  Directions.WEST,
+  Directions.NORTH_WEST
 ];
 
 /**
@@ -58,9 +62,13 @@ export const keyMap = {
   38: "up",
   40: "down",
   65: "shootLeft",
+  67: "shootDownRight",
   68: "shootRight",
+  69: "shootUpRight",
+  81: "shootUpLeft",
   87: "shootUp",
-  83: "shootDown"
+  83: "shootDown",
+  90: "shootDownLeft"
 };
 
 export const CANVAS_WIDTH = 800;
