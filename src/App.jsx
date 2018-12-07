@@ -60,7 +60,7 @@ const defaultState = {
  * Is NOT in utils.js, since it manipulates state
  * @param {Object<State>} state
  * @param {Object<Action>} action - contains instructions on how to make next state
- * @returns {Object<Hero, number, Array<Snipe>, Array<Unit>>} next state
+ * @returns {Object<Hero, number, Array<Snipe>, Array<Unit>, Array<Bullet>>} next state
  */
 const makeNextState = (state = defaultState, action) => {
   if (MOVE_BULLETS_CMD === action.type) {
@@ -79,7 +79,7 @@ const makeNextState = (state = defaultState, action) => {
             ...bullet,
             ...nextPoint,
             ...correctUnitBeyondBorderPosition(
-              nextPoint,
+              { ...bullet, ...nextPoint },
               BULLET_SIZE,
               CANVAS_WIDTH,
               CANVAS_HEIGHT
