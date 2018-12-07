@@ -52,6 +52,7 @@ export const correctUnitBeyondBorderPosition = (
   fieldWidth,
   fieldHeight
 ) => {
+  console.log("correctUnitBeyondBorderPosition #1", unit);
   if (unit.x >= fieldWidth - unitSize / 2) {
     unit.x = fieldWidth - (unitSize / 2) * 2;
     unit.dir = createOppositeDir(unit.dir);
@@ -66,6 +67,7 @@ export const correctUnitBeyondBorderPosition = (
     unit.y = unitSize;
     unit.dir = createOppositeDir(unit.dir);
   }
+  console.log("correctUnitBeyondBorderPosition #2", unit);
   return unit;
 };
 

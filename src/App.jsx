@@ -121,9 +121,11 @@ const makeNextState = (state = defaultState, action) => {
             /** @type Point */ { x: snipe.x, y: snipe.y },
             PX_PER_MOVE
           );
-          if (isCollision(state.hero, nextPoint, HERO_SIZE * 2)
-            || isCollisions(state.snipes, nextPoint, SNIPE_SIZE * 2)) {
-            nextPoint = { x: snipe.x, y: snipe.y };
+          if (
+            isCollision(state.hero, nextPoint, HERO_SIZE * 2) ||
+            isCollisions(state.snipes, nextPoint, SNIPE_SIZE * 2)
+          ) {
+            nextPoint = { x: snipe.x, y: snipe.y }; // TODO makePoint(snipe);
           }
 
           return /** @type Snipe */ {
@@ -139,14 +141,13 @@ const makeNextState = (state = defaultState, action) => {
         }
       }
     );
-    const updatedBullets = [...state.bullets];
+    const updatedBullets = /** @type Array<Unit> */ [...state.bullets];
     // scan circle of terror and when a hero is in it: 1. decide which dir hero is, 2. shoot in dir
     state.snipes.map(_snipe => {
       if (state.nrOfMoves % 5 === 0) {
         let dir = getDirBetween(_snipe, state.hero);
         if (dir) {
           console.log("SNIPE saw hero");
-          // TODO calculate the relative dir from snipe to hero
           updatedBullets.push(makeBullet(_snipe, 20, dir));
         }
       }
@@ -208,15 +209,14 @@ class App extends Component {
     }
   };
 
+  // .filter(bullet => typeof bullet !== "undefined" && bullet.dir)
   render() {
     return (
       <Fragment>
         <Canvas
           hero={this.state.hero}
           snipes={this.state.snipes}
-          bullets={this.state.bullets.filter(
-            bullet => typeof bullet !== "undefined" && bullet.dir
-          )}
+          bullets={this.state.bullets}
         />
         <div>
           Hero: {this.state.hero.x}, {this.state.hero.y}, {this.state.hero.dir}
@@ -225,6 +225,14 @@ class App extends Component {
           return typeof snipe !== "undefined" && snipe !== null ? (
             <div key={i}>
               snipe {i}: {snipe.x}, {snipe.y}, {snipe.dir}
+            </div>
+          ) : null;
+        })}
+
+        {this.state.bullets.map((bullet, i) => {
+          return typeof bullet !== "undefined" && bullet !== null ? (
+            <div key={i}>
+              bullet {i}: {bullet.x}, {bullet.y}, {bullet.dir}
             </div>
           ) : null;
         })}

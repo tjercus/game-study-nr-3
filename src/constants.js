@@ -1,4 +1,9 @@
 /**
+ * @interface Point
+ * @property {number} x - cartesian coord, left-right axis
+ * @property {number} y - cartesian coord, up-down axis
+ */
+/**
  * TODO perhaps name 'Movable'
  * @interface Unit
  * @augments Point
@@ -16,9 +21,8 @@
  */
 
 /**
- * @interface Point
- * @property {number} x - cartesian coord, left-right axis
- * @property {number} y - cartesian coord, up-down axis
+ * @interface Bullet
+ * @augments Unit
  */
 
 /**
