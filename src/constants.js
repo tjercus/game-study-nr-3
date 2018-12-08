@@ -42,6 +42,13 @@ export const Directions = {
   NORTH_WEST: "north_west"
 };
 
+export const MoveKeys = {
+  UP: "up",
+  RIGHT: "right",
+  DOWN: "down",
+  LEFT: "left"
+};
+
 export const DirectionsArray = [
   Directions.NORTH,
   Directions.NORTH_EAST,

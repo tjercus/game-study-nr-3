@@ -1,11 +1,14 @@
 import uuidv4 from "uuid/v4";
 import {
+  BULLET_SIZE,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   Directions,
   DirectionsArray,
-  HERO_SIZE
+  HERO_SIZE, MoveKeys, SNIPE_SIZE
 } from "./constants";
+
+const isNortSouthWall = (point = {x: 0, y: 0}) => point.x <= BULLET_SIZE || point.x >= CANVAS_WIDTH  - SNIPE_SIZE;
 
 /**
  *
@@ -17,34 +20,35 @@ export const createRandomDir = () => {
 };
 
 /**
- * What is the opposite dir of a dir?
+ * What is the opposite dir of a dir considering type of wall?
  * @param {string} dir
+ * @param {Point} point - where the unit is
  * @returns {string} opposite dir
  */
-const createOppositeDir = dir => {
+const createOppositeDir = (dir, point) => {
   if (dir === Directions.NORTH) {
     return Directions.SOUTH;
   }
   if (dir === Directions.NORTH_EAST) {
-    return Directions.SOUTH_WEST;
+    return (isNortSouthWall(point)) ? Directions.NORTH_WEST : Directions.SOUTH_WEST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.SOUTH_EAST) {
-    return Directions.NORTH_WEST;
+    return (isNortSouthWall(point)) ? Directions.SOUTH_WEST : Directions.NORTH_WEST;
   }
   if (dir === Directions.SOUTH) {
     return Directions.NORTH;
   }
   if (dir === Directions.SOUTH_WEST) {
-    return Directions.NORTH_EAST;
+    return (isNortSouthWall(point)) ? Directions.SOUTH_EAST: Directions.NORTH_EAST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.NORTH_WEST) {
-    return Directions.SOUTH_EAST;
+    return (isNortSouthWall(point)) ? Directions.NORTH_EAST : Directions.SOUTH_EAST;
   }
 };
 
@@ -66,17 +70,17 @@ export const correctUnitBeyondBorderPosition = (
 ) => {
   if (unit.x >= fieldWidth - unitSize / 2) {
     unit.x = fieldWidth - (unitSize / 2) * 2;
-    unit.dir = createOppositeDir(unit.dir);
+    unit.dir = createOppositeDir(unit.dir, unit); // TODO use makePoint
   } else if (unit.x <= 0) {
     unit.x = unitSize;
-    unit.dir = createOppositeDir(unit.dir);
+    unit.dir = createOppositeDir(unit.dir, unit);
   }
   if (unit.y >= fieldHeight - unitSize / 2) {
     unit.y = fieldHeight - (unitSize / 2) * 2;
-    unit.dir = createOppositeDir(unit.dir);
+    unit.dir = createOppositeDir(unit.dir, unit);
   } else if (unit.y <= 0) {
     unit.y = unitSize;
-    unit.dir = createOppositeDir(unit.dir);
+    unit.dir = createOppositeDir(unit.dir, unit);
   }
   return unit;
 };
@@ -92,6 +96,7 @@ export const createNextPoint = (dir, prevPoint, nrOfPixels) => {
   const nextPoint = /** @type Point */ { ...prevPoint };
   switch (dir) {
     case Directions.NORTH:
+    case MoveKeys.UP:
       nextPoint.y = prevPoint.y - nrOfPixels;
       break;
     case Directions.NORTH_EAST:
@@ -99,6 +104,7 @@ export const createNextPoint = (dir, prevPoint, nrOfPixels) => {
       nextPoint.y = prevPoint.y - nrOfPixels;
       break;
     case Directions.EAST:
+    case MoveKeys.RIGHT:
       nextPoint.x = prevPoint.x + nrOfPixels;
       break;
     case Directions.SOUTH_EAST:
@@ -106,6 +112,7 @@ export const createNextPoint = (dir, prevPoint, nrOfPixels) => {
       nextPoint.y = prevPoint.y + nrOfPixels;
       break;
     case Directions.SOUTH:
+    case MoveKeys.DOWN:
       nextPoint.y = prevPoint.y + nrOfPixels;
       break;
     case Directions.SOUTH_WEST:
@@ -113,6 +120,7 @@ export const createNextPoint = (dir, prevPoint, nrOfPixels) => {
       nextPoint.y = prevPoint.y + nrOfPixels;
       break;
     case Directions.WEST:
+    case MoveKeys.LEFT:
       nextPoint.x = prevPoint.x - nrOfPixels;
       break;
     case Directions.NORTH_WEST:
