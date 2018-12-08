@@ -144,7 +144,7 @@ const makeNextState = (state = defaultState, action) => {
     const updatedBullets = /** @type Array<Unit> */ [...state.bullets];
     // scan circle of terror and when a hero is in it: 1. decide which dir hero is, 2. shoot in dir
     state.snipes.map(_snipe => {
-      if (state.nrOfMoves % 5 === 0) {
+      if (state.nrOfMoves % 8 === 0) {
         let dir = getDirBetween(_snipe, state.hero);
         if (dir) {
           console.log("SNIPE saw hero");

@@ -1,15 +1,19 @@
 import uuidv4 from "uuid/v4";
 import {
-  BULLET_SIZE,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   Directions,
   DirectionsArray,
-  HERO_SIZE, MoveKeys, SNIPE_SIZE
+  HERO_SIZE,
+  MoveKeys,
 } from "./constants";
 
-const isNortSouthWall = (point = {x: 0, y: 0}) => point.x <= BULLET_SIZE || point.x >= CANVAS_WIDTH  - SNIPE_SIZE;
-
+const isNorthSouthWall = (point = {x: 0, y: 0}) => {
+  const normalizedX = point.x < 0 ? 0: point.x > CANVAS_WIDTH ? CANVAS_WIDTH : point.x;
+  const normalizedY = point.y < 0 ? 0: point.y > CANVAS_HEIGHT ? CANVAS_HEIGHT : point.y;
+  const normalizedPoint = { x: normalizedX, y: normalizedY };
+  return normalizedPoint.x === 0 || normalizedPoint.x === CANVAS_WIDTH;
+};
 /**
  *
  * @returns {string} random dir, one of four
@@ -30,25 +34,25 @@ const createOppositeDir = (dir, point) => {
     return Directions.SOUTH;
   }
   if (dir === Directions.NORTH_EAST) {
-    return (isNortSouthWall(point)) ? Directions.NORTH_WEST : Directions.SOUTH_WEST;
+    return (isNorthSouthWall(point)) ? Directions.NORTH_WEST : Directions.SOUTH_EAST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.SOUTH_EAST) {
-    return (isNortSouthWall(point)) ? Directions.SOUTH_WEST : Directions.NORTH_WEST;
+    return (isNorthSouthWall(point)) ? Directions.SOUTH_WEST : Directions.NORTH_EAST;
   }
   if (dir === Directions.SOUTH) {
     return Directions.NORTH;
   }
   if (dir === Directions.SOUTH_WEST) {
-    return (isNortSouthWall(point)) ? Directions.SOUTH_EAST: Directions.NORTH_EAST;
+    return (isNorthSouthWall(point)) ? Directions.SOUTH_EAST: Directions.NORTH_EAST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.NORTH_WEST) {
-    return (isNortSouthWall(point)) ? Directions.NORTH_EAST : Directions.SOUTH_EAST;
+    return (isNorthSouthWall(point)) ? Directions.NORTH_EAST : Directions.SOUTH_WEST;
   }
 };
 
@@ -68,19 +72,20 @@ export const correctUnitBeyondBorderPosition = (
   fieldWidth,
   fieldHeight
 ) => {
+  const prevUnit = { ...unit };
   if (unit.x >= fieldWidth - unitSize / 2) {
     unit.x = fieldWidth - (unitSize / 2) * 2;
-    unit.dir = createOppositeDir(unit.dir, unit); // TODO use makePoint
+    unit.dir = createOppositeDir(unit.dir, prevUnit); // TODO use makePoint
   } else if (unit.x <= 0) {
     unit.x = unitSize;
-    unit.dir = createOppositeDir(unit.dir, unit);
+    unit.dir = createOppositeDir(unit.dir, prevUnit);
   }
   if (unit.y >= fieldHeight - unitSize / 2) {
     unit.y = fieldHeight - (unitSize / 2) * 2;
-    unit.dir = createOppositeDir(unit.dir, unit);
+    unit.dir = createOppositeDir(unit.dir, prevUnit);
   } else if (unit.y <= 0) {
     unit.y = unitSize;
-    unit.dir = createOppositeDir(unit.dir, unit);
+    unit.dir = createOppositeDir(unit.dir, prevUnit);
   }
   return unit;
 };
