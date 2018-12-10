@@ -9,7 +9,8 @@ import {
   isCollision,
   makeBullet,
   isCollisions,
-  getDirBetween
+  getDirBetween,
+  correctUnitForBorderImpact
 } from "./utils";
 import {
   CANVAS_HEIGHT,
@@ -25,7 +26,8 @@ import {
   HERO_SHOOT_CMD,
   MOVE_BULLETS_CMD,
   BULLET_SIZE,
-  HERO_SIZE
+  HERO_SIZE,
+  TOGGLE_RICOCHET_CMD
 } from "./constants";
 import uuidv4 from "uuid/v4";
 
@@ -52,7 +54,8 @@ const defaultState = {
       id: uuidv4()
     }
   ],
-  bullets: []
+  bullets: [],
+  settings: { ricochet: false }
 };
 
 /**
@@ -75,15 +78,23 @@ const makeNextState = (state = defaultState, action) => {
           !isCollision(state.hero, bullet, HERO_SIZE) &&
           !isCollisions(state.snipes, bullet, SNIPE_SIZE)
         ) {
+          let correctedUnit = state.settings.ricochet
+            ? correctUnitBeyondBorderPosition(
+                { ...bullet, ...nextPoint },
+                BULLET_SIZE,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT
+              )
+            : correctUnitForBorderImpact(
+                { ...bullet, ...nextPoint },
+                BULLET_SIZE,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT
+              );
           let finalBullet = {
             ...bullet,
             ...nextPoint,
-            ...correctUnitBeyondBorderPosition(
-              { ...bullet, ...nextPoint },
-              BULLET_SIZE,
-              CANVAS_WIDTH,
-              CANVAS_HEIGHT
-            )
+            ...correctedUnit
           };
           if (finalBullet.x > 0 && finalBullet.y > 0) {
             return finalBullet;
@@ -170,6 +181,11 @@ const makeNextState = (state = defaultState, action) => {
     state.bullets.push(makeBullet(state.hero, HERO_SIZE, action.shootDir));
     return { ...state };
   }
+  if (TOGGLE_RICOCHET_CMD === action.type) {
+    const updatedSettings = state.settings;
+    updatedSettings.ricochet = !state.settings.ricochet;
+    return { ...state, settings: updatedSettings };
+  }
   return state;
 };
 
@@ -218,24 +234,38 @@ class App extends Component {
           snipes={this.state.snipes}
           bullets={this.state.bullets}
         />
-        <div>
-          Hero: {this.state.hero.x}, {this.state.hero.y}, {this.state.hero.dir}
-        </div>
-        {this.state.snipes.map((snipe, i) => {
-          return typeof snipe !== "undefined" && snipe !== null ? (
-            <div key={i}>
-              snipe {i}: {snipe.x}, {snipe.y}, {snipe.dir}
-            </div>
-          ) : null;
-        })}
+        <article id={"control-panel"}>
+          <button
+            onClick={() => {
+              this.setState(
+                makeNextState(this.state, {
+                  type: TOGGLE_RICOCHET_CMD
+                })
+              );
+            }}
+          >
+            toggle ricochet
+          </button>
+          <div>
+            Hero: {this.state.hero.x}, {this.state.hero.y},{" "}
+            {this.state.hero.dir}
+          </div>
+          {this.state.snipes.map((snipe, i) => {
+            return typeof snipe !== "undefined" && snipe !== null ? (
+              <div key={i}>
+                snipe {i}: {snipe.x}, {snipe.y}, {snipe.dir}
+              </div>
+            ) : null;
+          })}
 
-        {this.state.bullets.map((bullet, i) => {
-          return typeof bullet !== "undefined" && bullet !== null ? (
-            <div key={i}>
-              bullet {i}: {bullet.x}, {bullet.y}, {bullet.dir}
-            </div>
-          ) : null;
-        })}
+          {this.state.bullets.map((bullet, i) => {
+            return typeof bullet !== "undefined" && bullet !== null ? (
+              <div key={i}>
+                bullet {i}: {bullet.x}, {bullet.y}, {bullet.dir}
+              </div>
+            ) : null;
+          })}
+        </article>
       </Fragment>
     );
   }

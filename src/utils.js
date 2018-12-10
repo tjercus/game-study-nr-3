@@ -5,13 +5,29 @@ import {
   Directions,
   DirectionsArray,
   HERO_SIZE,
-  MoveKeys,
+  MoveKeys
 } from "./constants";
 
-const isNorthSouthWall = (point = {x: 0, y: 0}) => {
-  const normalizedX = point.x < 0 ? 0: point.x > CANVAS_WIDTH ? CANVAS_WIDTH : point.x;
-  const normalizedY = point.y < 0 ? 0: point.y > CANVAS_HEIGHT ? CANVAS_HEIGHT : point.y;
-  const normalizedPoint = { x: normalizedX, y: normalizedY };
+/**
+ * If a point is beyond a border, set it to having coordinates on the border
+ * @param {Point} point
+ * @returns {{x: number, y: number}} Point
+ */
+const normalizePoint = point => {
+  const normalizedX =
+    point.x < 0 ? 0 : point.x > CANVAS_WIDTH ? CANVAS_WIDTH : point.x;
+  const normalizedY =
+    point.y < 0 ? 0 : point.y > CANVAS_HEIGHT ? CANVAS_HEIGHT : point.y;
+  return { x: normalizedX, y: normalizedY };
+};
+
+/**
+ * Is a Point at or beyond a north-south wall? If not then it is not a wall-point or an east-west wall
+ * @param point
+ * @returns {boolean}
+ */
+const isNorthSouthWall = (point = { x: 0, y: 0 }) => {
+  const normalizedPoint = normalizePoint(point);
   return normalizedPoint.x === 0 || normalizedPoint.x === CANVAS_WIDTH;
 };
 /**
@@ -34,25 +50,33 @@ const createOppositeDir = (dir, point) => {
     return Directions.SOUTH;
   }
   if (dir === Directions.NORTH_EAST) {
-    return (isNorthSouthWall(point)) ? Directions.NORTH_WEST : Directions.SOUTH_EAST;
+    return isNorthSouthWall(point)
+      ? Directions.NORTH_WEST
+      : Directions.SOUTH_EAST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.SOUTH_EAST) {
-    return (isNorthSouthWall(point)) ? Directions.SOUTH_WEST : Directions.NORTH_EAST;
+    return isNorthSouthWall(point)
+      ? Directions.SOUTH_WEST
+      : Directions.NORTH_EAST;
   }
   if (dir === Directions.SOUTH) {
     return Directions.NORTH;
   }
   if (dir === Directions.SOUTH_WEST) {
-    return (isNorthSouthWall(point)) ? Directions.SOUTH_EAST: Directions.NORTH_EAST;
+    return isNorthSouthWall(point)
+      ? Directions.SOUTH_EAST
+      : Directions.NORTH_WEST;
   }
   if (dir === Directions.EAST) {
     return Directions.WEST;
   }
   if (dir === Directions.NORTH_WEST) {
-    return (isNorthSouthWall(point)) ? Directions.NORTH_EAST : Directions.SOUTH_WEST;
+    return isNorthSouthWall(point)
+      ? Directions.NORTH_EAST
+      : Directions.SOUTH_WEST;
   }
 };
 
@@ -88,6 +112,21 @@ export const correctUnitBeyondBorderPosition = (
     unit.dir = createOppositeDir(unit.dir, prevUnit);
   }
   return unit;
+};
+
+export const correctUnitForBorderImpact = (
+  unit,
+  unitSize,
+  fieldWidth,
+  fieldHeight
+) => {
+  const normalizedPoint = normalizePoint({ ...unit });
+  return normalizedPoint.x === 0 ||
+    normalizedPoint.x === fieldWidth ||
+    normalizedPoint.y === 0 ||
+    normalizedPoint.y === fieldHeight
+    ? { ...unit, x: 0, y: 0 }
+    : unit;
 };
 
 /**

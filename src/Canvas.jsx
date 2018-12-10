@@ -10,23 +10,21 @@ import { CANVAS_HEIGHT } from "./constants";
 const Canvas = props => {
   const viewBox = [0, 0, CANVAS_HEIGHT, CANVAS_HEIGHT];
 
-  const onCanvasClick = () => {
-    console.log("clicked on main canvas");
-  };
-
   return (
-    <svg id="game-canvas" viewBox={viewBox} onClick={onCanvasClick}>
+    <svg id="game-canvas" viewBox={viewBox}>
       <Hero hero={props.hero} />
 
       {props.bullets.map(bullet =>
-        (typeof bullet !== "undefined" && bullet !== null)
-          ? <Bullet bullet={bullet} key={bullet.id} />
-          : null )}
+        typeof bullet !== "undefined" && bullet !== null ? (
+          <Bullet bullet={bullet} key={bullet.id} />
+        ) : null
+      )}
 
       {props.snipes.map(snipe =>
-        (typeof snipe !== "undefined" && snipe !== null)
-          ? <Snipe snipe={snipe} key={snipe.id} />
-          : null )}
+        typeof snipe !== "undefined" && snipe !== null ? (
+          <Snipe snipe={snipe} key={snipe.id} />
+        ) : null
+      )}
     </svg>
   );
 };
